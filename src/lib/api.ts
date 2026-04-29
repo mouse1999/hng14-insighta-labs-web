@@ -41,12 +41,6 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  // Login: fetch authorize_url from backend, then redirect (spec requirement)
-  async initiateLogin(): Promise<void> {
-    const data = await request<{ authorize_url: string }>('/auth/github');
-    window.location.href = data.authorize_url;
-  },
-
   // Logout: backend clears HTTP-only cookie — no token passed from frontend
   logout(): Promise<void> {
     return request<void>('/auth/logout', { method: 'POST' });
