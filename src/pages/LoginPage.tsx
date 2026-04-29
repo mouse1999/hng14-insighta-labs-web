@@ -1,11 +1,21 @@
 // pages/LoginPage.tsx
-import { GitBranch } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL || '';
+import { useState } from 'react';
+import { GitBranch, Loader2 } from 'lucide-react';
+import { api } from '../lib/api';
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
-  const handleLogin = () => {
-    window.location.href = `${API_URL}/auth/github`;
+  const [loading, setLoading] = useState(false);
+
+  // Spec: call /auth/github first → get authorize_url → redirect
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      await api.initiateLogin();
+    } catch {
+      toast.error('Failed to connect to GitHub. Please try again.');
+      setLoading(false);
+    }
   };
 
   return (
@@ -14,7 +24,6 @@ export default function LoginPage() {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-acid/5 blur-3xl" />
         <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-acid/3 blur-3xl" />
-        {/* Grid lines */}
         <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
@@ -26,7 +35,7 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-md mx-auto px-6 animate-fade-up">
-        {/* Logo / brand */}
+        {/* Brand */}
         <div className="mb-12 text-center">
           <div className="inline-flex items-center gap-2 mb-6">
             <div className="w-8 h-8 bg-acid rounded-sm flex items-center justify-center">
@@ -46,10 +55,14 @@ export default function LoginPage() {
         <div className="bg-ink-900 border border-white/[0.07] rounded-2xl p-8">
           <button
             onClick={handleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-acid hover:bg-acid-dim text-ink-950 font-display font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] text-sm tracking-wide"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 bg-acid hover:bg-acid-dim disabled:opacity-60 disabled:cursor-not-allowed text-ink-950 font-display font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] text-sm tracking-wide"
           >
-            <GitBranch size={18} strokeWidth={2} />
-            Continue with GitHub
+            {loading
+              ? <Loader2 size={18} className="animate-spin" />
+              : <GitBranch size={18} strokeWidth={2} />
+            }
+            {loading ? 'Redirecting to GitHub…' : 'Continue with GitHub'}
           </button>
 
           <div className="mt-6 pt-6 border-t border-white/[0.06]">
@@ -60,7 +73,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Stats teaser */}
+        {/* Stats */}
         <div className="mt-8 grid grid-cols-3 gap-4">
           {[
             { value: '2k+', label: 'Profiles' },

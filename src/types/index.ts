@@ -33,10 +33,9 @@ export interface CreateProfileRequest {
 
 export interface AuthResponse {
   status: string;
-  accessToken: string;
-  refreshToken: string;
   username: string;
   avatarUrl: string;
+  role: 'admin' | 'analyst';
 }
 
 export interface ErrorResponse {
@@ -44,20 +43,11 @@ export interface ErrorResponse {
   message: string;
 }
 
-export interface RefreshRequest {
-  refresh_token: string;
-}
-
-export interface RefreshResponse {
-  status: string;
-  accessToken: string;
-  refreshToken: string;
-}
-
+// No refreshToken — tokens stay in HTTP-only cookies only
 export interface UserState {
-  refreshToken: string | null;
   username: string | null;
   avatarUrl: string | null;
+  role: 'admin' | 'analyst' | null;
 }
 
 export interface FilterParams {

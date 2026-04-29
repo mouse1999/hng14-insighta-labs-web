@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Plus, RefreshCw } from 'lucide-react';
 import { api } from '../lib/api';
 import type { Profile, PaginatedResponse, FilterParams } from '../types';
+import { useAuth } from '../context/AuthContext';
 import ProfileCard from '../components/ProfileCard';
 import Pagination from '../components/Pagination';
 import CreateProfileModal from '../components/CreateProfileModal';
@@ -11,7 +12,14 @@ import toast from 'react-hot-toast';
 
 const LIMIT = 12;
 
-export default function ProfilesPage() {
+interface ProfilesPageProps {
+  onViewProfile?: (id: string) => void;
+}
+
+export default function ProfilesPage({ onViewProfile }: ProfilesPageProps) {
+  const { user } = useAuth();
+  const isAdmin = user.role === 'admin';
+
   const [data, setData] = useState<PaginatedResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterParams>({ page: 1, limit: LIMIT });
@@ -60,14 +68,17 @@ export default function ProfilesPage() {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          <FiltersBar filters={filters} onApply={setFilters} />
-          <button
-            onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-acid hover:bg-acid-dim text-ink-950 rounded-xl text-xs font-display font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <Plus size={13} />
-            Add Profile
-          </button>
+          <FiltersBar filters={filters} onApply={setFilters} isAdmin={isAdmin} />
+          {/* Create button — admin only */}
+          {isAdmin && (
+            <button
+              onClick={() => setShowCreate(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-acid hover:bg-acid-dim text-ink-950 rounded-xl text-xs font-display font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Plus size={13} />
+              Add Profile
+            </button>
+          )}
         </div>
       </div>
 
@@ -86,6 +97,7 @@ export default function ProfilesPage() {
                 key={profile.id}
                 profile={profile}
                 onDelete={handleDelete}
+                onView={onViewProfile}
                 style={{ animationDelay: `${idx * 40}ms`, opacity: deletingId === profile.id ? 0.4 : 1 }}
               />
             ))}
@@ -104,17 +116,19 @@ export default function ProfilesPage() {
             <RefreshCw size={24} className="text-mist-dim" />
           </div>
           <h3 className="font-display font-semibold text-mist mb-2">No profiles found</h3>
-          <p className="text-mist-dim text-sm mb-6">Try adjusting your filters or add a new profile.</p>
-          <button
-            onClick={() => setShowCreate(true)}
-            className="px-5 py-2.5 bg-acid hover:bg-acid-dim text-ink-950 rounded-xl text-sm font-display font-semibold transition-all"
-          >
-            Add First Profile
-          </button>
+          <p className="text-mist-dim text-sm mb-6">Try adjusting your filters{isAdmin ? ' or add a new profile' : ''}.</p>
+          {isAdmin && (
+            <button
+              onClick={() => setShowCreate(true)}
+              className="px-5 py-2.5 bg-acid hover:bg-acid-dim text-ink-950 rounded-xl text-sm font-display font-semibold transition-all"
+            >
+              Add First Profile
+            </button>
+          )}
         </div>
       )}
 
-      {showCreate && (
+      {isAdmin && showCreate && (
         <CreateProfileModal
           onClose={() => setShowCreate(false)}
           onCreated={() => load(filters)}

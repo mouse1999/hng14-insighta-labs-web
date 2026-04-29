@@ -1,60 +1,29 @@
 // App.tsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { register401Handler } from './lib/api';
 import LoginPage from './pages/LoginPage';
-import CallbackPage from './pages/CallbackPage';
+import DashboardPage from './pages/DashboardPage';
 import ProfilesPage from './pages/ProfilesPage';
+import ProfileDetailPage from './pages/ProfileDetailPage';
 import SearchPage from './pages/SearchPage';
+import AccountPage from './pages/AccountPage';
 import Navbar from './components/Navbar';
-import { api, register401Handler } from './lib/api';
+
+// Register 401 handler at module level — clearUser injected by Router on mount
+let _clearUser: (() => void) | null = null;
+register401Handler(() => _clearUser?.());
 
 function Router() {
-  const { isAuthenticated, setUser, clearUser, user } = useAuth();
-  const [page, setPage] = useState('profiles');
-  const [checking, setChecking] = useState(true);
+  const { isAuthenticated, isLoading, clearUser } = useAuth();
+  const [page, setPage] = useState('dashboard');
+  const [profileDetailId, setProfileDetailId] = useState<string | null>(null);
 
-  const isCallback = window.location.pathname === '/auth/callback' ||
-    window.location.search.includes('username=');
+  // Wire up the 401 handler to this context's clearUser
+  _clearUser = clearUser;
 
-  // Register global 401 handler — clears session → LoginPage renders
-  useEffect(() => {
-    register401Handler(() => {
-      clearUser();
-    });
-  }, [clearUser]);
-
-  // Restore session on mount via /api/me cookie
-  useEffect(() => {
-    if (isCallback) { setChecking(false); return; }
-    fetch('/api/me', {
-      credentials: 'include',
-      headers: { 'X-API-Version': '1' },
-    })
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data?.username) {
-          setUser({
-            username: data.username,
-            avatarUrl: data.avatarUrl,
-            refreshToken: data.refreshToken ?? null,
-          });
-        }
-      })
-      .catch(() => {})
-      .finally(() => setChecking(false));
-  }, [setUser, isCallback]);
-
-  const handleLogout = async () => {
-    try {
-      await api.logout(user.refreshToken ?? '');
-    } catch {
-      // ignore — clear session regardless
-    }
-    clearUser();
-  };
-
-  if (checking && !isCallback) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-ink-950 flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-acid border-t-transparent rounded-full animate-spin" />
@@ -62,20 +31,35 @@ function Router() {
     );
   }
 
-  if (isCallback) {
-    return <CallbackPage onSuccess={() => { setPage('profiles'); }} />;
-  }
-
+  // Not authenticated — show login
+  // Backend handles OAuth redirect back to /dashboard, cookie is set automatically
   if (!isAuthenticated) {
     return <LoginPage />;
   }
 
+  // Profile detail view
+  if (profileDetailId) {
+    return (
+      <div className="min-h-screen bg-ink-950">
+        <Navbar activePage={page} onNavigate={(p) => { setPage(p); setProfileDetailId(null); }} />
+        <main>
+          <ProfileDetailPage
+            profileId={profileDetailId}
+            onBack={() => setProfileDetailId(null)}
+          />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-ink-950">
-      <Navbar activePage={page} onNavigate={setPage} onLogout={handleLogout} />
+      <Navbar activePage={page} onNavigate={setPage} />
       <main>
-        {page === 'profiles' && <ProfilesPage />}
-        {page === 'search' && <SearchPage />}
+        {page === 'dashboard' && <DashboardPage onNavigate={setPage} />}
+        {page === 'profiles' && <ProfilesPage onViewProfile={(id) => { setProfileDetailId(id); }} />}
+        {page === 'search'   && <SearchPage onViewProfile={(id) => { setProfileDetailId(id); }} />}
+        {page === 'account'  && <AccountPage />}
       </main>
     </div>
   );
@@ -95,9 +79,7 @@ export default function App() {
             fontSize: '13px',
             fontFamily: '"DM Sans", sans-serif',
           },
-          success: {
-            iconTheme: { primary: '#b8ff57', secondary: '#0a0a0f' },
-          },
+          success: { iconTheme: { primary: '#b8ff57', secondary: '#0a0a0f' } },
         }}
       />
     </AuthProvider>

@@ -1,10 +1,12 @@
 // components/ProfileCard.tsx
-import { Trash2, Globe, User, Calendar, Hash } from 'lucide-react';
+import { Trash2, Globe, User, Calendar, Hash, ChevronRight } from 'lucide-react';
 import type { Profile } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 interface ProfileCardProps {
   profile: Profile;
   onDelete: (id: string) => void;
+  onView?: (id: string) => void;
   style?: React.CSSProperties;
 }
 
@@ -15,15 +17,11 @@ function pct(n: number | null): string | null {
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit',
   });
 }
 
-// Spec: "Country: United States (US, 89%)"
 function fmtCountry(profile: Profile): string {
   if (!profile.countryName && !profile.countryId) return 'N/A';
   const name = profile.countryName || profile.countryId || '';
@@ -34,13 +32,11 @@ function fmtCountry(profile: Profile): string {
   return parts.length ? `${name} (${parts.join(', ')})` : name;
 }
 
-// Spec: "Age: 28 (adult)"
 function fmtAge(profile: Profile): string {
   if (profile.age == null) return 'N/A';
   return profile.ageGroup ? `${profile.age} (${profile.ageGroup})` : String(profile.age);
 }
 
-// Spec: "Gender: female (97%)"
 function fmtGender(profile: Profile): string {
   if (!profile.gender) return 'N/A';
   const prob = pct(profile.genderProbability);
@@ -58,7 +54,10 @@ const ageGroupColor: Record<string, string> = {
   senior: 'text-violet-400 bg-violet-400/10',
 };
 
-export default function ProfileCard({ profile, onDelete, style }: ProfileCardProps) {
+export default function ProfileCard({ profile, onDelete, onView, style }: ProfileCardProps) {
+  const { user } = useAuth();
+  const isAdmin = user.role === 'admin';
+
   return (
     <div
       style={style}
@@ -77,13 +76,29 @@ export default function ProfileCard({ profile, onDelete, style }: ProfileCardPro
             </p>
           </div>
         </div>
-        <button
-          onClick={() => onDelete(profile.id)}
-          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-mist-dim hover:text-red-400 hover:bg-red-400/10 transition-all duration-200"
-          title="Delete profile"
-        >
-          <Trash2 size={13} />
-        </button>
+
+        <div className="flex items-center gap-1">
+          {/* View detail button */}
+          {onView && (
+            <button
+              onClick={() => onView(profile.id)}
+              className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-mist-dim hover:text-acid hover:bg-acid/10 transition-all duration-200"
+              title="View profile"
+            >
+              <ChevronRight size={13} />
+            </button>
+          )}
+          {/* Delete — admin only */}
+          {isAdmin && (
+            <button
+              onClick={() => onDelete(profile.id)}
+              className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-mist-dim hover:text-red-400 hover:bg-red-400/10 transition-all duration-200"
+              title="Delete profile"
+            >
+              <Trash2 size={13} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Badges */}
@@ -100,7 +115,7 @@ export default function ProfileCard({ profile, onDelete, style }: ProfileCardPro
         )}
       </div>
 
-      {/* Stats — formatted per spec: "Gender: female (97%)", "Age: 28 (adult)", etc. */}
+      {/* Stats */}
       <div className="grid grid-cols-1 gap-1.5 text-xs">
         <Stat icon={<User size={11} />} label="Gender" value={fmtGender(profile)} />
         <Stat icon={<Hash size={11} />} label="Age" value={fmtAge(profile)} />
