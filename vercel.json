@@ -1,3 +1,12 @@
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
-}
+‎{
+‎  "rewrites": [
+‎    {
+‎      "source": "/auth/:path*",
+‎      "destination": "https://tri-service-profiler-production.up.railway.app/auth/:path*"
+‎    },
+‎    {
+‎      "source": "/api/:path*",
+‎      "destination": "https://tri-service-profiler-production.up.railway.app/api/:path*"
+‎    }
+‎  ]
+‎}
