@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { LogOut, Shield, Eye, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
-import toast from 'react-hot-toast';
 
 export default function AccountPage() {
   const { user, clearUser } = useAuth();

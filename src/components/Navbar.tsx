@@ -2,7 +2,6 @@
 import { LogOut, Search, Users, LayoutDashboard, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
-import toast from 'react-hot-toast';
 
 interface NavbarProps {
   activePage: string;
