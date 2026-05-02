@@ -35,7 +35,7 @@ export interface AuthResponse {
   status: string;
   username: string;
   avatarUrl: string;
-  role: 'admin' | 'analyst';
+  role: 'ROLE_ADMIN' | 'ROLE_ANALYST';
 }
 
 export interface ErrorResponse {
@@ -47,7 +47,7 @@ export interface ErrorResponse {
 export interface UserState {
   username: string | null;
   avatarUrl: string | null;
-  role: 'admin' | 'analyst' | null;
+  role: 'ROLE_ADMIN' | 'ROLE_ANALYST' | null;
 }
 
 export interface FilterParams {
