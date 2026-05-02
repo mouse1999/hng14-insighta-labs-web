@@ -1,5 +1,5 @@
 // components/FiltersBar.tsx
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Filter, X, Download } from 'lucide-react';
 import type { FilterParams } from '../types';
 import { api } from '../lib/api';
@@ -20,6 +20,8 @@ export default function FiltersBar({ filters, onApply, isAdmin = false }: Filter
   const [open, setOpen] = useState(false);
   const [local, setLocal] = useState<FilterParams>(filters);
   const [exporting, setExporting] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const set = <K extends keyof FilterParams>(k: K, v: FilterParams[K]) =>
     setLocal((prev) => ({ ...prev, [k]: v }));
@@ -43,8 +45,29 @@ export default function FiltersBar({ filters, onApply, isAdmin = false }: Filter
     }
   };
 
+  // Close on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Flip dropdown to the right if it would overflow left, or pin to right edge
+  useEffect(() => {
+    if (!open || !dropdownRef.current) return;
+    const rect = dropdownRef.current.getBoundingClientRect();
+    if (rect.right > window.innerWidth) {
+      dropdownRef.current.style.left = 'auto';
+      dropdownRef.current.style.right = '0';
+    }
+  }, [open]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <div className="flex items-center gap-2">
         <button
           onClick={() => setOpen(!open)}
@@ -59,7 +82,6 @@ export default function FiltersBar({ filters, onApply, isAdmin = false }: Filter
           {hasActive && <span className="w-1.5 h-1.5 rounded-full bg-acid inline-block" />}
         </button>
 
-        {/* Export CSV — admin only */}
         {isAdmin && (
           <button
             onClick={handleExport}
@@ -79,7 +101,11 @@ export default function FiltersBar({ filters, onApply, isAdmin = false }: Filter
       </div>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 z-40 w-80 bg-ink-900 border border-white/[0.09] rounded-2xl p-5 shadow-2xl animate-fade-up">
+        <div
+          ref={dropdownRef}
+          className="absolute top-full left-0 mt-2 z-40 w-80 bg-ink-900 border border-white/[0.09] rounded-2xl p-5 shadow-2xl animate-fade-up"
+          style={{ maxWidth: 'calc(100vw - 2rem)' }}
+        >
           <h3 className="font-display font-semibold text-mist text-sm mb-4">Filter Profiles</h3>
           <div className="space-y-4">
             <Field label="Gender">
