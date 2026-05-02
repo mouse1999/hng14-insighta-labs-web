@@ -21,7 +21,7 @@ interface SearchPageProps {
 
 export default function SearchPage({ onViewProfile }: SearchPageProps) {
   const { user } = useAuth();
-  const isAdmin = user.role === 'admin';
+  const isAdmin = user.role === 'ROLE_ADMIN';
 
   const [query, setQuery] = useState('');
   const [data, setData] = useState<PaginatedResponse | null>(null);
