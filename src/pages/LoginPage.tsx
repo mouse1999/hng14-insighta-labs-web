@@ -1,4 +1,3 @@
-// pages/LoginPage.tsx
 import { useState } from 'react';
 import { GitBranch, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -8,18 +7,38 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
-  // 1. Call GET /auth/github → backend returns { authorize_url: "https://github.com/..." }
-  // 2. Read the JSON and redirect browser to that URL
   const handleLogin = async () => {
     setLoading(true);
+    console.log('[LoginPage] Login initiated');
+    console.log('[LoginPage] API_URL:', API_URL || '(empty - using relative URLs via Vercel proxy)');
+
     try {
+      console.log('[LoginPage] Fetching authorize_url from:', `${API_URL}/auth/github`);
+
       const res = await fetch(`${API_URL}/auth/github`, {
         credentials: 'include',
         headers: { 'X-API-Version': '1' },
       });
+
+      console.log('[LoginPage] Response status:', res.status);
+      console.log('[LoginPage] Response ok:', res.ok);
+      console.log('[LoginPage] Response headers:', Object.fromEntries(res.headers.entries()));
+
       const data = await res.json();
+      console.log('[LoginPage] Response data:', data);
+
+      if (!data.authorize_url) {
+        console.error('[LoginPage] No authorize_url in response!', data);
+        toast.error('Invalid response from server.');
+        setLoading(false);
+        return;
+      }
+
+      console.log('[LoginPage] Redirecting to GitHub:', data.authorize_url);
       window.location.href = data.authorize_url;
-    } catch {
+
+    } catch (err) {
+      console.error('[LoginPage] Login failed:', err);
       toast.error('Failed to connect to GitHub. Please try again.');
       setLoading(false);
     }
