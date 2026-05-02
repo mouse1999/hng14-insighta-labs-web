@@ -1,4 +1,4 @@
-// context/AuthContext.tsx
+l// context/AuthContext.tsx
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { UserState } from '../types';
 
@@ -38,10 +38,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const data = await res.json();
         console.log('[AuthContext] User data received:', data);
         setUser({
-          username: data.username,
-          avatarUrl: data.avatarUrl,
-          role: data.role,
-        });
+  username: data.username,
+  avatarUrl: data.avatarUrl,
+  role: data.role?.[0] ?? null,  // extract first item from the set
+});
         console.log('[AuthContext] User state set — isAuthenticated will be:', !!data.username);
       } else {
         const text = await res.text();
