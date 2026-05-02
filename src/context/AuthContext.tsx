@@ -13,44 +13,61 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
-
 const EMPTY: UserState = { username: null, avatarUrl: null, role: null };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserState>(EMPTY);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch user from /api/me — cookie is sent automatically (HTTP-only)
   const refreshUser = useCallback(async () => {
+    console.log('[AuthContext] refreshUser called');
+    console.log('[AuthContext] API_URL:', API_URL || '(empty - using relative URLs via Vercel proxy)');
+    console.log('[AuthContext] Fetching:', `${API_URL}/auth/me`);
+
     try {
       const res = await fetch(`${API_URL}/auth/me`, {
         credentials: 'include',
         headers: { 'X-API-Version': '1' },
       });
+
+      console.log('[AuthContext] /auth/me response status:', res.status);
+      console.log('[AuthContext] /auth/me response ok:', res.ok);
+      console.log('[AuthContext] /auth/me response headers:', Object.fromEntries(res.headers.entries()));
+
       if (res.ok) {
         const data = await res.json();
+        console.log('[AuthContext] User data received:', data);
         setUser({
           username: data.username,
           avatarUrl: data.avatarUrl,
           role: data.role,
         });
+        console.log('[AuthContext] User state set — isAuthenticated will be:', !!data.username);
       } else {
+        const text = await res.text();
+        console.warn('[AuthContext] /auth/me failed — response body:', text);
         setUser(EMPTY);
       }
-    } catch {
+    } catch (err) {
+      console.error('[AuthContext] /auth/me threw an error:', err);
       setUser(EMPTY);
     } finally {
       setIsLoading(false);
+      console.log('[AuthContext] isLoading set to false');
     }
   }, []);
 
   const clearUser = useCallback(() => {
+    console.log('[AuthContext] clearUser called — clearing user state');
     setUser(EMPTY);
   }, []);
 
   useEffect(() => {
+    console.log('[AuthContext] AuthProvider mounted — calling refreshUser');
     refreshUser();
   }, [refreshUser]);
+
+  console.log('[AuthContext] Rendering — user:', user, '| isLoading:', isLoading, '| isAuthenticated:', !!user.username);
 
   return (
     <AuthContext.Provider value={{
