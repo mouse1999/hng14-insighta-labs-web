@@ -7,7 +7,7 @@ import { api } from '../lib/api';
 export default function AccountPage() {
   const { user, clearUser } = useAuth();
   const [loading, setLoading] = useState(false);
-  const isAdmin = user.role === 'admin';
+  const isAdmin = user.role === 'ROLE_ADMIN';
 
   const handleLogout = async () => {
     setLoading(true);
