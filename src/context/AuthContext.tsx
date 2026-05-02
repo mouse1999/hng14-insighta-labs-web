@@ -1,4 +1,4 @@
-l// context/AuthContext.tsx
+// context/AuthContext.tsx
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { UserState } from '../types';
 
