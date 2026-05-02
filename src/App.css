@@ -16,6 +16,9 @@
     outline-offset: 2px;
   }
 }
+html, body {
+  overflow-x: hidden;
+}
 
 .hero {
   position: relative;
