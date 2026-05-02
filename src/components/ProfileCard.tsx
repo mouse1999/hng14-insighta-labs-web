@@ -56,7 +56,7 @@ const ageGroupColor: Record<string, string> = {
 
 export default function ProfileCard({ profile, onDelete, onView, style }: ProfileCardProps) {
   const { user } = useAuth();
-  const isAdmin = user.role === 'admin';
+  const isAdmin = user.role === 'ROLE_ADMIN';
 
   return (
     <div
