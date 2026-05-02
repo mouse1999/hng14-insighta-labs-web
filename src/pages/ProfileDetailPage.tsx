@@ -17,7 +17,7 @@ function pct(n: number | null) {
 
 export default function ProfileDetailPage({ profileId, onBack }: ProfileDetailPageProps) {
   const { user } = useAuth();
-  const isAdmin = user.role === 'admin';
+  const isAdmin = user.role === 'ROLE_ADMIN';
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
