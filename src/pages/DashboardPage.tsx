@@ -20,19 +20,13 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
       {/* Welcome header */}
       <div className="flex items-center gap-4 mb-10">
-        {user.avatarUrl
-          ? (
-            <>
-              {console.log('[DashboardPage] Rendering avatar:', user.avatarUrl)}
-              <img
-                src={user.avatarUrl}
-                alt={user.username || ''}
-                className="w-14 h-14 rounded-2xl border border-white/10"
-              />
-            </>
-          )
-          : console.log('[DashboardPage] No avatarUrl — avatar not rendered')
-        }
+        {{user.avatarUrl && (
+  <img
+    src={user.avatarUrl}
+    alt={user.username || ''}
+    className="w-14 h-14 rounded-2xl border border-white/10"
+  />
+)}
         <div>
           <h1 className="font-display font-bold text-2xl text-mist">
             Welcome back, {user.username}
