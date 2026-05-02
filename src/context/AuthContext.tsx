@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Fetch user from /api/me — cookie is sent automatically (HTTP-only)
   const refreshUser = useCallback(async () => {
     try {
-      const res = await fetch(`${API_URL}/api/me`, {
+      const res = await fetch(`${API_URL}/auth/me`, {
         credentials: 'include',
         headers: { 'X-API-Version': '1' },
       });
