@@ -18,7 +18,7 @@ interface ProfilesPageProps {
 
 export default function ProfilesPage({ onViewProfile }: ProfilesPageProps) {
   const { user } = useAuth();
-  const isAdmin = user.role === 'admin';
+  const isAdmin = user.role === 'ROLE_ADMIN';
 
   const [data, setData] = useState<PaginatedResponse | null>(null);
   const [loading, setLoading] = useState(true);
