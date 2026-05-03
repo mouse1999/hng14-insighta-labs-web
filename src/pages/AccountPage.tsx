@@ -21,6 +21,10 @@ export default function AccountPage() {
     }
   };
 
+  const roleDisplay = typeof user.role === 'string'
+    ? user.role.replace('ROLE_', '').toLowerCase()
+    : 'user';
+
   if (isLoading || !user.username) {
     return (
       <div className="max-w-lg mx-auto px-4 py-10">
@@ -40,7 +44,7 @@ export default function AccountPage() {
             <img
               src={user.avatarUrl}
               alt={user.username}
-              className="w-16 h-16 rounded-2xl border border-white/10"
+              className="w-16 h-16 rounded-2xl border border-white/10 object-cover"
             />
           ) : (
             <div className="w-16 h-16 bg-ink-700 rounded-2xl flex items-center justify-center">
@@ -55,7 +59,7 @@ export default function AccountPage() {
                 : <Eye size={12} className="text-mist-dim" />
               }
               <span className={`text-xs font-medium ${isAdmin ? 'text-acid' : 'text-mist-dim'}`}>
-                {user.role?.replace('ROLE_', '').toLowerCase()}
+                {roleDisplay}
               </span>
             </div>
           </div>
