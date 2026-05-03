@@ -24,22 +24,22 @@ function fmtDate(iso: string) {
 
 function fmtCountry(profile: Profile): string {
   if (!profile.countryName && !profile.countryId) return 'N/A';
-  const name = profile.countryName || profile.countryId || '';
+  const name = profile.country_name || profile.country_id || '';
   const parts: string[] = [];
-  if (profile.countryId) parts.push(profile.countryId);
-  const prob = pct(profile.countryProbability);
+  if (profile.country_id) parts.push(profile.country_id);
+  const prob = pct(profile.country_probability);
   if (prob) parts.push(prob);
   return parts.length ? `${name} (${parts.join(', ')})` : name;
 }
 
 function fmtAge(profile: Profile): string {
   if (profile.age == null) return 'N/A';
-  return profile.ageGroup ? `${profile.age} (${profile.ageGroup})` : String(profile.age);
+  return profile.age_group ? `${profile.age} (${profile..age_group})` : String(profile.age);
 }
 
 function fmtGender(profile: Profile): string {
   if (!profile.gender) return 'N/A';
-  const prob = pct(profile.genderProbability);
+  const prob = pct(profile.gender_probability);
   return prob ? `${profile.gender} (${prob})` : profile.gender;
 }
 
@@ -109,8 +109,8 @@ export default function ProfileCard({ profile, onDelete, onView, style }: Profil
           </span>
         )}
         {profile.ageGroup && (
-          <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${ageGroupColor[profile.ageGroup] || 'text-mist-dim bg-ink-700'}`}>
-            {profile.ageGroup}
+          <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${ageGroupColor[profile.age_group] || 'text-mist-dim bg-ink-700'}`}>
+            {profile.age_group}
           </span>
         )}
       </div>
