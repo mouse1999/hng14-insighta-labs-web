@@ -67,13 +67,13 @@ export default function LoginPage() {
             <div className="w-8 h-8 bg-acid rounded-sm flex items-center justify-center">
               <span className="text-ink-950 font-display font-bold text-sm">P</span>
             </div>
-            <span className="font-display font-bold text-xl tracking-tight text-mist">ProfileDB</span>
+            <span className="font-display font-bold text-xl tracking-tight text-mist">Insighta Labs+</span>
           </div>
           <h1 className="font-display font-bold text-4xl text-mist leading-tight mb-3">
             Welcome back
           </h1>
           <p className="text-mist-dim text-sm leading-relaxed">
-            Sign in with your GitHub account to access<br />the profile intelligence portal.
+            Sign in with your GitHub account to access<br />Insighta Labs+ portal.
           </p>
         </div>
 
