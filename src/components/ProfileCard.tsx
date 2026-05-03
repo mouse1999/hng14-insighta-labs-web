@@ -23,7 +23,7 @@ function fmtDate(iso: string) {
 }
 
 function fmtCountry(profile: Profile): string {
-  if (!profile.countryName && !profile.countryId) return 'N/A';
+  if (!profile.country_name && !profile.country_id) return 'N/A';
   const name = profile.country_name || profile.country_id || '';
   const parts: string[] = [];
   if (profile.country_id) parts.push(profile.country_id);
@@ -34,7 +34,7 @@ function fmtCountry(profile: Profile): string {
 
 function fmtAge(profile: Profile): string {
   if (profile.age == null) return 'N/A';
-  return profile.age_group ? `${profile.age} (${profile..age_group})` : String(profile.age);
+  return profile.age_group ? `${profile.age} (${profile.age_group})` : String(profile.age);
 }
 
 function fmtGender(profile: Profile): string {
@@ -72,7 +72,7 @@ export default function ProfileCard({ profile, onDelete, onView, style }: Profil
           <div>
             <h3 className="font-display font-semibold text-mist text-sm leading-tight">{profile.name}</h3>
             <p className="text-mist-dim text-xs font-mono mt-0.5 truncate max-w-[140px]">
-              {profile.id.slice(0, 8)}…
+              {profile.id.slice(0, 8)}
             </p>
           </div>
         </div>

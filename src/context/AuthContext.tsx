@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log('[AuthContext] Fetching:', `${API_URL}/auth/me`);
 
     try {
-      const res = await fetch(`${API_URL}/auth/me`, {npm
+      const res = await fetch(`${API_URL}/auth/me`, {
         credentials: 'include',
         headers: { 'X-API-Version': '1' },
       });
