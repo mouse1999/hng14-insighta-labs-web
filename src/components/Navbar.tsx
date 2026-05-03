@@ -36,7 +36,7 @@ export default function Navbar({ activePage, onNavigate }: NavbarProps) {
             <span className="text-ink-950 font-display font-bold text-xs">P</span>
           </div>
           <span className="font-display font-semibold text-base text-mist tracking-tight hidden sm:block">
-            ProfileDB
+            Insighta Labs+
           </span>
         </button>
 
