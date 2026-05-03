@@ -60,16 +60,14 @@ export default function FiltersBar({ filters, onApply, isAdmin = false }: Filter
           {hasActive && <span className="w-1.5 h-1.5 rounded-full bg-acid inline-block" />}
         </button>
 
-        {isAdmin && (
-          <button
-            onClick={handleExport}
-            disabled={exporting}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl border border-white/[0.08] bg-ink-900 text-mist-dim hover:text-mist hover:bg-ink-800 disabled:opacity-50 text-xs font-medium transition-all"
-          >
-            <Download size={13} />
-            {exporting ? 'Exporting…' : 'Export CSV'}
-          </button>
-        )}
+        <button
+          onClick={handleExport}
+          disabled={exporting}
+          className="flex items-center gap-2 px-3 py-2 rounded-xl border border-white/[0.08] bg-ink-900 text-mist-dim hover:text-mist hover:bg-ink-800 disabled:opacity-50 text-xs font-medium transition-all"
+        >
+          <Download size={13} />
+          {exporting ? 'Exporting…' : 'Export CSV'}
+        </button>
 
         {hasActive && (
           <button
