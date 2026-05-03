@@ -131,7 +131,7 @@ export default function SearchPage({ onViewProfile }: SearchPageProps) {
               </div>
               <Pagination
                 page={data.page}
-                totalPages={data.total_pages}
+                total_pages={data.total_pages}
                 total={data.total}
                 limit={data.limit}
                 onChange={(p) => search(query, p)}
