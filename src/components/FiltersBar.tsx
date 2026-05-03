@@ -8,7 +8,6 @@ import toast from 'react-hot-toast';
 interface FiltersBarProps {
   filters: FilterParams;
   onApply: (f: FilterParams) => void;
-  isAdmin?: boolean;
 }
 
 const GENDERS = ['', 'male', 'female'];
@@ -16,7 +15,7 @@ const AGE_GROUPS = ['', 'child', 'adult', 'senior'];
 const SORT_BY_OPTIONS = ['', 'name', 'age', 'createdAt', 'genderProbability', 'countryProbability'];
 const ORDERS = ['asc', 'desc'];
 
-export default function FiltersBar({ filters, onApply, isAdmin = false }: FiltersBarProps) {
+export default function FiltersBar({ filters, onApply }: FiltersBarProps) {
   const [open, setOpen] = useState(false);
   const [local, setLocal] = useState<FilterParams>(filters);
   const [exporting, setExporting] = useState(false);
