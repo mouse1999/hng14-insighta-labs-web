@@ -4,12 +4,12 @@ export interface Profile {
   id: string;
   name: string;
   gender: string | null;
-  genderProbability: number | null;
+  gender_probability: number | null;
   age: number | null;
-  ageGroup: string | null;
-  countryId: string | null;
-  countryName: string | null;
-  countryProbability: number | null;
+  age_group: string | null;
+  country_id: string | null;
+  country_name: string | null;
+  country_probability: number | null;
   createdAt: string;
 }
 
