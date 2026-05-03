@@ -8,7 +8,6 @@ const defaultHeaders = {
   'X-API-Version': '1',
 };
 
-// Registered by App.tsx — called on any 401 to clear session and show LoginPage
 let on401: (() => void) | null = null;
 export function register401Handler(fn: () => void) {
   on401 = fn;
@@ -17,7 +16,7 @@ export function register401Handler(fn: () => void) {
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
     ...options,
-    credentials: 'include',       // cookies sent automatically — no manual token handling
+    credentials: 'include',
     headers: {
       ...defaultHeaders,
       ...options.headers,
@@ -41,7 +40,6 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  // Logout: backend clears HTTP-only cookie — no token passed from frontend
   logout(): Promise<void> {
     return request<void>('/auth/logout', { method: 'POST' });
   },
@@ -63,16 +61,18 @@ export const api = {
   },
 
   // GET /api/profiles/:id
-  getProfile(id: string): Promise<Profile> {
-    return request<Profile>(`/api/profiles/${id}`);
+  async getProfile(id: string): Promise<Profile> {
+    const res = await request<{ status: string; data: Profile }>(`/api/profiles/${id}`);
+    return res.data;
   },
 
   // POST /api/profiles — admin only
-  createProfile(body: CreateProfileRequest): Promise<Profile> {
-    return request<Profile>('/api/profiles', {
+  async createProfile(body: CreateProfileRequest): Promise<Profile> {
+    const res = await request<{ status: string; data: Profile }>('/api/profiles', {
       method: 'POST',
       body: JSON.stringify(body),
     });
+    return res.data;
   },
 
   // DELETE /api/profiles/:id — admin only
@@ -87,7 +87,7 @@ export const api = {
     return request<PaginatedResponse>(`/api/profiles/search?${params}`);
   },
 
-  // GET /api/profiles/export?format=csv — fetch+blob to keep X-API-Version header
+  // GET /api/profiles/export?format=csv
   async exportCSV(gender?: string, countryId?: string): Promise<void> {
     const params = new URLSearchParams({ format: 'csv' });
     if (gender)    params.append('gender', gender);
