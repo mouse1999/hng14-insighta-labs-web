@@ -23,7 +23,10 @@ export default function ProfileDetailPage({ profileId, onBack }: ProfileDetailPa
 
   useEffect(() => {
     api.getProfile(profileId)
-      .then(setProfile)
+      .then(p => {
+        console.log('[ProfileDetail] raw profile:', p);
+        setProfile(p);
+      })
       .catch(() => toast.error('Failed to load profile'))
       .finally(() => setLoading(false));
   }, [profileId]);
@@ -56,6 +59,27 @@ export default function ProfileDetailPage({ profileId, onBack }: ProfileDetailPa
     );
   }
 
+  const genderValue = profile.gender
+    ? `${profile.gender}${pct(profile.gender_probability) ? ` (${pct(profile.gender_probability)})` : ''}`
+    : 'N/A';
+
+  const ageValue = profile.age != null
+    ? `${profile.age}${profile.age_group ? ` (${profile.age_group})` : ''}`
+    : 'N/A';
+
+  const countryParts = [
+    profile.country_name ?? null,
+    profile.country_id || pct(profile.country_probability)
+      ? `(${[profile.country_id, pct(profile.country_probability)].filter(Boolean).join(', ')})`
+      : null,
+  ].filter(Boolean);
+  const countryValue = countryParts.length > 0 ? countryParts.join(' ') : 'N/A';
+
+  const createdValue = new Date(profile.createdAt).toLocaleString('en-GB', {
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
+
   return (
     <div className="max-w-lg mx-auto px-4 sm:px-6 py-10">
       <button
@@ -79,23 +103,10 @@ export default function ProfileDetailPage({ profileId, onBack }: ProfileDetailPa
 
         {/* Stats */}
         <div className="space-y-3">
-          <Row icon={<User size={13} />} label="Gender"
-            value={profile.gender
-              ? `${profile.gender}${pct(profile.gender_probability) ? ` (${pct(profile.gender_probability)})` : ''}`
-              : 'N/A'} />
-          <Row icon={<Hash size={13} />} label="Age"
-            value={profile.age != null
-              ? `${profile.age}${profile.age_group ? ` (${profile.age_group})` : ''}`
-              : 'N/A'} />
-          <Row icon={<Globe size={13} />} label="Country"
-            value={profile.country_name
-              ? `${profile.country_name}${profile.country_id ? ` (${profile.country_id}` : ''}${pct(profile.country_probability) ? `, ${pct(profile.country_probability)})` : profile.country_id ? ')' : ''}`
-              : 'N/A'} />
-          <Row icon={<Calendar size={13} />} label="Created"
-            value={new Date(profile.createdAt).toLocaleString('en-GB', {
-              day: 'numeric', month: 'short', year: 'numeric',
-              hour: '2-digit', minute: '2-digit',
-            })} />
+          <Row icon={<User size={13} />} label="Gender" value={genderValue} />
+          <Row icon={<Hash size={13} />} label="Age" value={ageValue} />
+          <Row icon={<Globe size={13} />} label="Country" value={countryValue} />
+          <Row icon={<Calendar size={13} />} label="Created" value={createdValue} />
         </div>
 
         {/* Admin-only delete */}
