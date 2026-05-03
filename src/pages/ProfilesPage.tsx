@@ -68,7 +68,7 @@ export default function ProfilesPage({ onViewProfile }: ProfilesPageProps) {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          <FiltersBar filters={filters} onApply={setFilters} isAdmin={isAdmin} />
+          <FiltersBar filters={filters} onApply={setFilters} />
           {/* Create button — admin only */}
           {isAdmin && (
             <button
