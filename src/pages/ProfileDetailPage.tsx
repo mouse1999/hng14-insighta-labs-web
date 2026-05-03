@@ -81,15 +81,15 @@ export default function ProfileDetailPage({ profileId, onBack }: ProfileDetailPa
         <div className="space-y-3">
           <Row icon={<User size={13} />} label="Gender"
             value={profile.gender
-              ? `${profile.gender}${pct(profile.genderProbability) ? ` (${pct(profile.genderProbability)})` : ''}`
+              ? `${profile.gender}${pct(profile.gender_probability) ? ` (${pct(profile.gender_probability)})` : ''}`
               : 'N/A'} />
           <Row icon={<Hash size={13} />} label="Age"
             value={profile.age != null
-              ? `${profile.age}${profile.ageGroup ? ` (${profile.ageGroup})` : ''}`
+              ? `${profile.age}${profile.age_group ? ` (${profile.age_group})` : ''}`
               : 'N/A'} />
           <Row icon={<Globe size={13} />} label="Country"
-            value={profile.countryName
-              ? `${profile.countryName}${profile.countryId ? ` (${profile.countryId}` : ''}${pct(profile.countryProbability) ? `, ${pct(profile.countryProbability)})` : profile.countryId ? ')' : ''}`
+            value={profile.country_name
+              ? `${profile.country_name}${profile.country_id ? ` (${profile.country_id}` : ''}${pct(profile.country_probability) ? `, ${pct(profile.country_probability)})` : profile.country_id ? ')' : ''}`
               : 'N/A'} />
           <Row icon={<Calendar size={13} />} label="Created"
             value={new Date(profile.createdAt).toLocaleString('en-GB', {
