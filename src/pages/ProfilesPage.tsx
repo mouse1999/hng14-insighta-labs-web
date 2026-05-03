@@ -104,7 +104,7 @@ export default function ProfilesPage({ onViewProfile }: ProfilesPageProps) {
           </div>
           <Pagination
             page={data.page}
-            totalPages={data.total_pages}
+            total_pages={data.total_pages}
             total={data.total}
             limit={data.limit}
             onChange={(p) => setFilters((f) => ({ ...f, page: p }))}
