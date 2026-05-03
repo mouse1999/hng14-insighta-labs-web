@@ -108,7 +108,7 @@ export default function ProfileCard({ profile, onDelete, onView, style }: Profil
             {profile.gender}
           </span>
         )}
-        {profile.ageGroup && (
+        {profile.age_group && (
           <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${ageGroupColor[profile.age_group] || 'text-mist-dim bg-ink-700'}`}>
             {profile.age_group}
           </span>
