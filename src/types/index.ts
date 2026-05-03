@@ -18,7 +18,7 @@ export interface PaginatedResponse {
   page: number;
   limit: number;
   total: number;
-  totalPages: number;
+  total_pages: number;
   links: {
     self: string;
     next: string | null;
