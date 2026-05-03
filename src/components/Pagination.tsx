@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PaginationProps {
   page: number;
-  total_pages: number;
+  totalPages: number;
   total: number;
   limit: number;
   onChange: (page: number) => void;
