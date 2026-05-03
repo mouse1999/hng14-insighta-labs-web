@@ -3,18 +3,18 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PaginationProps {
   page: number;
-  totalPages: number;
+  total_pages: number;
   total: number;
   limit: number;
   onChange: (page: number) => void;
 }
 
-export default function Pagination({ page, totalPages, total, limit, onChange }: PaginationProps) {
+export default function Pagination({ page, total_pages, total, limit, onChange }: PaginationProps) {
   const from = (page - 1) * limit + 1;
   const to = Math.min(page * limit, total);
 
   const hasPrev = page > 1;
-  const hasNext = page < totalPages;
+  const hasNext = page < total_pages;
 
   return (
     <div className="flex items-center justify-between mt-6 flex-wrap gap-3">
@@ -23,7 +23,6 @@ export default function Pagination({ page, totalPages, total, limit, onChange }:
       </p>
 
       <div className="flex items-center gap-1">
-        {/* Previous button — only shown when not on page 1 */}
         {hasPrev && (
           <button
             onClick={() => onChange(page - 1)}
@@ -33,7 +32,6 @@ export default function Pagination({ page, totalPages, total, limit, onChange }:
           </button>
         )}
 
-        {/* Previous page number */}
         {hasPrev && (
           <button
             onClick={() => onChange(page - 1)}
@@ -43,12 +41,10 @@ export default function Pagination({ page, totalPages, total, limit, onChange }:
           </button>
         )}
 
-        {/* Current page */}
         <button className="min-w-[28px] h-7 rounded-lg text-xs font-mono font-bold bg-acid text-ink-950 transition-all">
           {page}
         </button>
 
-        {/* Next page number */}
         {hasNext && (
           <button
             onClick={() => onChange(page + 1)}
@@ -58,7 +54,6 @@ export default function Pagination({ page, totalPages, total, limit, onChange }:
           </button>
         )}
 
-        {/* Next button — only shown when not on last page */}
         {hasNext && (
           <button
             onClick={() => onChange(page + 1)}
