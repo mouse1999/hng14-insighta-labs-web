@@ -75,10 +75,12 @@ export default function ProfileDetailPage({ profileId, onBack }: ProfileDetailPa
   ].filter(Boolean);
   const countryValue = countryParts.length > 0 ? countryParts.join(' ') : 'N/A';
 
-  const createdValue = new Date(profile.createdAt).toLocaleString('en-GB', {
-    day: 'numeric', month: 'short', year: 'numeric',
-    hour: '2-digit', minute: '2-digit',
-  });
+  const createdValue = profile.createdAt
+    ? new Date(profile.createdAt).toLocaleString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+      })
+    : 'N/A';
 
   return (
     <div className="max-w-lg mx-auto px-4 sm:px-6 py-10">
@@ -96,7 +98,7 @@ export default function ProfileDetailPage({ profileId, onBack }: ProfileDetailPa
             <User size={24} className="text-mist-dim" />
           </div>
           <div>
-            <h1 className="font-display font-bold text-xl text-mist">{profile.name}</h1>
+            <h1 className="font-display font-bold text-xl text-mist capitalize">{profile.name}</h1>
             <p className="text-mist-dim text-xs font-mono mt-0.5">{profile.id}</p>
           </div>
         </div>
@@ -130,7 +132,7 @@ function Row({ icon, label, value }: { icon: React.ReactNode; label: string; val
         {icon}
         <span className="text-[10px] uppercase tracking-wider">{label}</span>
       </div>
-      <span className="font-mono text-sm text-mist">{value}</span>
+      <span className="font-mono text-sm text-mist capitalize">{value}</span>
     </div>
   );
 }
