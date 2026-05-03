@@ -5,14 +5,13 @@ import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
 
 export default function AccountPage() {
-  const { user, clearUser } = useAuth();
+  const { user, clearUser, isLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const isAdmin = user.role === 'ROLE_ADMIN';
 
   const handleLogout = async () => {
     setLoading(true);
     try {
-      // Backend clears HTTP-only cookie — no token sent from frontend
       await api.logout();
     } catch {
       // clear locally regardless
@@ -21,6 +20,14 @@ export default function AccountPage() {
       setLoading(false);
     }
   };
+
+  if (isLoading || !user.username) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-10">
+        <div className="h-64 bg-ink-900 rounded-2xl animate-pulse" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-lg mx-auto px-4 sm:px-6 py-10">
@@ -32,7 +39,7 @@ export default function AccountPage() {
           {user.avatarUrl ? (
             <img
               src={user.avatarUrl}
-              alt={user.username || ''}
+              alt={user.username}
               className="w-16 h-16 rounded-2xl border border-white/10"
             />
           ) : (
@@ -47,8 +54,8 @@ export default function AccountPage() {
                 ? <Shield size={12} className="text-acid" />
                 : <Eye size={12} className="text-mist-dim" />
               }
-              <span className={`text-xs font-medium capitalize ${isAdmin ? 'text-acid' : 'text-mist-dim'}`}>
-                {user.role}
+              <span className={`text-xs font-medium ${isAdmin ? 'text-acid' : 'text-mist-dim'}`}>
+                {user.role?.replace('ROLE_', '').toLowerCase()}
               </span>
             </div>
           </div>
